@@ -1,0 +1,24 @@
+{
+    "name": "weebly/php-webhook-client",
+    "type": "sample application",
+    "description": "PHP Webhook client server-side sample application",
+    "keywords": ["weebly", "webhook"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Weebly",
+            "email": "developer@weebly.com",
+            "homepage": "https://www.weebly.com",
+            "role": "Company"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "firebase/php-jwt": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Weebly\\": "lib/Weebly/"
+        }
+    }
+}
