@@ -18,7 +18,9 @@
     },
     "autoload": {
         "psr-4": {
-            "Weebly\\": "lib/Weebly/"
+            "Weebly\\": "lib/Weebly/",
+            "Util\\": "lib/Util/",
+            "PHPWebhookClient\\": "app/"
         }
     }
 }
