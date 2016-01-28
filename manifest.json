@@ -1,0 +1,27 @@
+{
+  "manifest": "1",
+  "client_id": "CLIENT_ID",
+  "version": "1.0.0",
+  "callback_url": "ROOT_URL/oauth/phase_one", 
+  "oauth_final_destination": "home",
+  "webhooks": {
+    "callback_url": "ROOT_URL/webhooks/callback",
+    "events": [
+      "user.update",
+      "site.update", "site.copy", "site.publish", "site.delete",
+      "store.info.update",
+      "store.category.create", "store.category.delete", "store.category.update",
+      "store.product.create", "store.product.update", "store.product.delete",
+      "store.cart.create", "store.cart.update",
+      "store.order.create", "store.order.update", "store.order.pay", "store.order.refund",
+      "store.order.ship", "store.order.return", "store.order.cancel",
+      "member.register", "member.update", "member.destroy",
+      "app.uninstall", "element.instance.delete",
+      "form.submit"
+    ]
+  },
+  "locale": {
+    "default": "en-us",
+    "supported": ["en-us"]
+  }
+}
