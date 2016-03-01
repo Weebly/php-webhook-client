@@ -6,7 +6,7 @@ require_once __DIR__ . '/vendor/autoload.php';
  * Client ID and Secret need to get set outside of the codebase, expecting environment var to store it
  */
 $client_id = getenv('WEEBLY_CLIENT_ID') ? getenv('WEEBLY_CLIENT_ID') : null;
-$client_secret = getenv('WEEBLY_CLIENT_SECRET') ? getenv('WEEBLY_CLIENT_SECRET') : null;
+$client_secret = getenv('WEEBLY_SECRET_KEY') ? getenv('WEEBLY_SECRET_KEYT') : null;
 
 if($client_id === null || $client_secret === null) {
 	echo "Error: Env vars not set for application.";
