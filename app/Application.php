@@ -183,7 +183,7 @@ HTML;
         $phase_two_link = 'https://' . $_SERVER['HTTP_HOST'] . '/oauth/phase_two';
 
         // get OAuth URL
-        $url = $wc->getAuthorizationUrl(['webhooks'], $phase_two_link, $params['callback_url']);
+        $url = $wc->getAuthorizationUrl([], $phase_two_link, $params['callback_url']);
 
         // redirect to auth url
         header('location: ' . $url);
