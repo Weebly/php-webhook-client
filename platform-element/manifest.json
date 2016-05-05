@@ -34,7 +34,8 @@
           "type": "stat",
           "primary_value": "100%",
           "primary_label": "This is a stat component.",
-          "secondary_value": [0, 3, 2, 5, 1]
+          "secondary_value": [0, 3, 2, 5, 1],
+          "secondary_display": "sparkline"
         }
       ]
     }
