@@ -177,7 +177,7 @@ HTML;
         }
 
         // redirect to authorize endpoint
-        $wc = new WeeblyClient($this->client_id, $this->client_secret, $params['user_id'], $params['site_id'], null);
+        $wc = new WeeblyClient($this->client_id, $this->client_secret, $params['user_id'], $params['site_id'], null, $params['version']);
 
         // build link for next step
         $phase_two_link = 'https://' . $_SERVER['HTTP_HOST'] . '/oauth/phase_two';
@@ -196,7 +196,7 @@ HTML;
      */
     private function oauthPhaseTwo($params) {
         // build client instance
-        $wc = new WeeblyClient($this->client_id, $this->client_secret, $params['user_id'], $params['site_id'], null);
+        $wc = new WeeblyClient($this->client_id, $this->client_secret, $params['user_id'], $params['site_id'], null, null);
 
         // get token from auth code
         $token = $wc->getAccessToken($params['authorization_code'], $params['callback_url']);
