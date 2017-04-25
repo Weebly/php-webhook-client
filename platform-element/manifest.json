@@ -2,10 +2,10 @@
   "manifest": "1",
   "client_id": "CLIENT_ID",
   "version": "1.0.0",
-  "callback_url": "https://limitless-savannah-83488.herokuapp.com/oauth/phase_one", 
+  "callback_url": "ROOT_URL/oauth/phase_one", 
   "oauth_final_destination": "home",
   "webhooks": {
-    "callback_url": "https://limitless-savannah-83488.herokuapp.com/webhooks/callback",
+    "callback_url": "ROOT_URL/webhooks/callback",
     "events": [
       "user.update","site.publish", "site.delete", "app.uninstall", "dashboard.card.update"
     ]
