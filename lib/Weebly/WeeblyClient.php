@@ -130,7 +130,7 @@ class WeeblyClient
             $parameters .= '&redirect_uri='.$redirect_uri;
         }
 
-        if (is_array($scope) === true) {
+        if (is_array($scope) === true && count($scope) > 0) {
             $scope_parameters = implode(',', $scope);
             $parameters .= '&scope='.$scope_parameters;
         }
@@ -221,7 +221,7 @@ class WeeblyClient
         }
 
         $result = $this->makeRequest($url, $this->prepareAccessTokenParams($authorization_code));
-        return $result->access_token;
+        return $result;
     }
 
     /**
