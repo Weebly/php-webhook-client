@@ -59,6 +59,6 @@ We have also included a sample `platform-element/manifest.json` file in the root
 
 1. Create a new app within the Weebly Developer Admin
 2. Edit the `manifest.json` file to include your app's CLIENT_ID and ROOT_URL (which should be the same as your Heroku deploy's URL)
-3. Zip up the `platform-element` oflder, and upload it as a new version of the newly created app
+3. Zip up the `platform-element` folder, and upload it as a new version of the newly created app
 
 If you wish to implement OAuth and webhooks to your existing app, include the bits of JSON described in the two sections above.
