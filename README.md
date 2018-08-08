@@ -38,7 +38,7 @@ Make sure you have the following data available:
 
 2. Rename `env.tmpl` file to `.env` and edit the file to add the Weebly API Keys, replace the OAuth Callback URL, and Webhook Callback URL.
 
-In the `.env` file, replace **WEEBLY_CLIENT_ID** and **WEEBLY_APP_SECRET** values respectively (removing the template string tags `{{` `}}` from the values.
+In the `.env` file, replace **WEEBLY_CLIENT_ID** and **WEEBLY_CLIENT_SECRET** values respectively (removing the template string tags `{{` `}}` from the values.
 
 For example, if your client id is **123456789**, you would change this line:
 
@@ -105,7 +105,8 @@ Update Your Secured App Root URL you obtained from the `heroku create` command a
 5. Set your Weebly API Keys as environment variables on the Heroku app
 
 `heroku config:set WEEBLY_CLIENT_ID=[your_app_client_id]`
-`heroku config:set WEEBLY_SECRET_KEY=[your_app_secret_key]`
+`heroku config:set WEEBLY_CLIENT_SECRET=[your_app_secret_key]`
+`heroku config:set NODE_ENV=production`
 
 6. Build the image and push to Container Registry
 
