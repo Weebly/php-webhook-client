@@ -1,2 +1,6 @@
 .idea/
 vendor/
+.env
+*.swp
+*.swo
+*.log

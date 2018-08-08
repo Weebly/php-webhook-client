@@ -1,0 +1,36 @@
+{
+  "name": "Php Webhook Client",
+  "description": "A sample microservice to subscribe and react to Weebly Webhook events.",
+  "repository": "https://github.com/weebly/php-webhook-client",
+  "logo": "https://dev.weebly.com/images/weebly_logo.svg",
+  "keywords": [
+    "Square",
+    "Weebly",
+    "node",
+    "webhook",
+    "webhooks",
+    "event",
+    "subscriber",
+    "subscription",
+    "sample app"
+  ],
+  "env": {
+    "WEEBLY_APP_NAME": {
+      "description": "Replace {{PREFIX}} with your first initial and the first three characters of your last name, keep `-env-sub` as is.",
+      "value": "{{PREFIX}}-evt-sub",
+      "required": true
+    },
+    "WEEBLY_CLIENT_ID": {
+      "description": "The `Client ID` for your Weebly app, obtained from the Weebly Developer Admin Portal: https://www.weebly.com/developer-admin/",
+      "required": true
+    },
+    "WEEBLY_SECRET": {
+      "description": "The `Secret` for your Weebly app, obtained from the Weebly Developer Admin Portal: https://www.weebly.com/developer-admin/",
+      "required": true
+    }
+  },
+  "image": "heroku/php",
+  "addons": [
+    "papertrail:choklad"
+  ]
+}

@@ -23,5 +23,8 @@
             "Util\\": "lib/Util/",
             "PHPWebhookClient\\": "app/"
         }
+    },
+    "require-dev": {
+        "heroku/heroku-buildpack-php": "^142.0"
     }
 }
