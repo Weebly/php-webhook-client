@@ -1,36 +1,248 @@
-.chapter(data-title='Your New Viewsaurus Tutorial')
+.chapter(data-title='Weebly PHP Webhook Client Tutorial')
   .step(data-title='Welcome!', data-file='tutorial/config.json')
-    h2 Welcome to Viewsaurus
-
-    p Thanks for writing a Viewsaurus tutorial! If you're new to Viewsaurus, feel free to click through this brief tutorial showing you how a Viewsaurus tutorial is structured.
-
-    p The tutorial's navigation controls are located above this text. Use <i class="fa fa-fw fa-play"></i> to move to the next step of the tutorial. Use <i class="fa fa-fw fa-play fa-rotate-180"></i> to move to the previous step of the tutorial (if there is one). Use <i class="fa fa-fw fa-list"></i> to see an overview of all the steps in the tutorial.
-
-    p Let's begin by walking through the files generated for you in the `tutorial` directory with the `saurus new` command - those files are actually what is being used to show you this tutorial right now!
-
-  .step(data-title='Tutorial Configuration', data-file='tutorial/config.json')
     :markdown
-      ## Configuration
+      ## Welcome!
 
-      The first file we'll look at is `config.json`. This contains high-level configuration information about your tutorial. This JSON file contains several properties you can declare about your tutorial:
+      The tutorial's navigation controls are located above this text. Use <i class="fa fa-fw fa-play"></i> to move to the next step of the tutorial. Use <i class="fa fa-fw fa-play fa-rotate-180"></i> to move to the previous step of the tutorial (if there is one). Use <i class="fa fa-fw fa-list"></i> to see an overview of all the steps in the tutorial.
 
-      * `title`: This is the title of your tutorial which will show on the first page
-      * `description`: This is a string of text that will appear above the "Start" button for your tutorial.
-      * `repo`: This is the GitHub repo that your code lives in. Right now we assume all projects are hosted there, but we'll likely make this agnostic in the future.
-      * `heroku`: This indicates whether or not your project supports instant deployment with the [Heroku Button](https://blog.heroku.com/archives/2014/8/7/heroku-button)
+      ### What You Will Learn
 
-      Now, let's take a look at the first file that contains the actual content of the tutorial, `index.jade`.
+      * How [Weebly PHP Webhook Client](https://github.com/Weebly/php-webhook-client) code operates.
+      * How to subscribe your app to Weebly Webhook Events
+      * How to properly handle Weebly Webhook Events
+    
+.chapter(data-title='App Setup')
+  .step(data-title='Register Your Weebly App', data-file='README.md', data-highlight='21-25')
+    :markdown
+      ## Register Your App
 
-  .step(data-title='Step Two')
-    h2 Under Construction
+      To obtain valid API Keys, you must first [register your weebly app](https://dev.weebly.com/pf_apps_register.html).
 
-    p more tutorial to come.
+      Please name this new app uniquely by using the following app naming convention (you will use this later in the tutorial as well): `{{PREFIX}}-evt-sub`
 
-  //- Example: include markdown file
-    .step(data-title='Step Three', data-file='', data-highlight='')
-      include:markdown three.md
+      To ensure a unique naming patter, I recommend setting {{PREFIX}} to the initial of your first name + first three characters of your last name.
 
-  //- Example: include jade file (don't need file extension)
-    .step(data-title='Step Four', data-file='', data-highlight='')
-      include four
+      For example, if your name is "James Gunn", your {{PREFIX}} would be: `jgun`.
 
+      Set the 'category' of your new app to `Services`.
+
+  .step(data-title='Usages', data-file='README.md', data-highlight='21-25')
+    :markdown
+      ## Usages
+
+      Please use the instructions in the [README](https://github.com/weebly/php-webhook-client#usage) file to setup this app for live operation and to see it in action.
+
+.chapter(data-title='Server Basics')
+  .step(data-title='Docker', data-file='server.js', data-highlight='3-5,16-20,56')
+    :markdown
+      ## About the Web Server
+
+      This app uses [Composer](https://https://getcomposer.org/) for dependency management, and is expected to run on [Heroku](https://heroku.com) within a [Docker](https://docker.com) container.
+
+      You can run this project locally, but that is outside the scope of this tutorial (since you'll need secure tunneling using a tool such as [ngrok](https://ngrok.com/).
+
+      Instead, it is expected you will follow the directions in the README file to deploy this container to Heroku.
+
+.chapter(data-title='Handling OAuth Requests')
+  .step(data-title='Handling OAuth Requests', data-file='')
+    :markdown
+      ## OAuth Middleware 
+
+      It handles all incoming HTTP requests to `/oauth` (where '/' is the webroot of the app).
+
+      Please read the [App Authorization and Installation Flow](https://dev.weebly.com/pf_apps_authorize_and_install.html) to understand each phase of the OAuth2 Authorization Flow that Weebly apps encounter during installation.
+
+  .step(data-title='OAuth - Phase One', data-file='', data-highlight='')
+    :markdown
+      ## Oauth - Phase One
+
+      First, the code will accept HTTP **GET** requests going to `/oauth/phase-one`, and immediately defines the `clientId` and `secretKey` variables which were made available from the Weebly Middleware.
+
+  .step(data-title='Request Invalidation', data-file='', data-highlight='')
+    :markdown
+      ## Request Validation
+
+      As a developer, you must **KNOW with great confidence** the inbound requests your web applications can trust.
+
+      In this section of code you can see how to invalidate requests to ensure that requests sent to this particular route can be trusted as coming from Weebly. 
+      Here, a comparison object is created and converted into a string (verification HMAC) using identical values to the Weebly generated HMAC.
+      then you use these two pieces of data to invalidate the HMAC query parameter received in requests to this route, are actually requests you can trust were sent from Weebly servers.
+
+      You can read the details about this [here](https://dev.weebly.com/pf_apps_authorize_and_install.html#decode-and-verify-the-hash), but to provide you the 'gist' of what happens:
+
+      1. A Weebly site administrator (user) clicks the "Add App" button for your app in [Weebly App Center](https://www.weebly.com/app-center)
+      2. Weebly presents the 'user' with the list of persmissions (**scopes** defined in your `manifest.json`) that your app is requesting
+      3. The 'user' can either authorize (connect) or decline, but assume the 'user' accepts for sake of example
+      4. Weebly creates an HMAC-SHA256 encoded hash of the request parameters using your Weebly App **SECRET**, which means **ONLY YOU** should be able to recreate that **EXACT** HMAC string using identical values
+      5. If your **generated** HMAC string is IDENTICAL to the HMAC in the request query parameters, you can consider this a "verified request" (trusting that it came from Weebly) and proceed with code execution
+
+  .step(data-title='Request an Authorization Code', data-file='', data-highlight='')
+    :markdown
+      ## Requesting an Authorization Code
+
+      Since the request is trusted, you first generate the second phase URL, callback parameters, and version (if included in the original request).
+
+      Then your app redirects to the appropriate Weebly URL to obtain an `authorization_code`.
+
+      If the redirect is successfully formed/accepted, Weebly will respond to your redirect by sending a new HTTP request to containing an `authorization_code` correlating to the Weebly User and Site.
+
+  .step(data-title='OAuth - Phase Two', data-file='', data-highlight='')
+    :markdown
+      ## Oauth - Phase Two
+
+      Here, the code designates it will accept HTTP **GET** requests going to `/oauth/phase-two`, and immediately defines the `clientId` and `secretKey` variables.
+
+  .step(data-title='Obtaining an Access Token', data-file='', data-highlight='')
+    :markdown
+      ## Exchanging Authorization Code for Access Token
+
+      **NOTE:** It is of CRITICAL IMPORTANCE you take every measure possible to secure and mitigate attackers from obtaining your Weebly API Keys (including your app `manifest.json` file).
+
+      There are a few things happening here to exchange the `authorization_code` for a valid `access_token`:
+      
+      1. The body is formed for the HTTP POST request which includes: `authorization_code`, `client_id`, `client_secret`
+      2. The `redirect_url` parameter is used as the destination for the subsequent code-token exchange request
+      3. App initiates POST request to **redirect_url** (Weebly API endpoint `/app-center/oauth/access_token`
+      4. An `access_token` will be received upon a successful request, and should be stored securely by your app for future [Weebly API](https://dev.weebly.com/pf_apis_about.html) requests
+
+  .step(data-title='New User/Account Setup', data-file='', data-highlight='')
+    :markdown
+      ## New User/Account Setup in Your App
+
+      Many developers get confused about when their app is actually "installed" and "connected" to a Weebly site.
+      
+      Logging new **access_tokens** to '/messages/messages.txt' file is not very useful or productive.
+      What this section of  code represents is the correct **point-in-time** during the [App Authorization and Installation Flow](https://dev.weebly.com/pf_apps_authorize_and_install.html#redirect-back-to-weebly-to-trade-auth-code-for-permanent-token) when your app/service has an opportunity to ensure the most optimal User Experience by performing any:
+
+      * Account/User setup
+      * New User Verification(s)
+      * Weebly Plan/Feature Checks
+      * Security Checks
+
+      These types of service initializations should occur prior to your app [redirecting to the final destination](https://dev.weebly.com/pf_apps_authorize_and_install.html#redirect-to-final-destination), which you can see in the next step of the tutorial.
+
+  .step(data-title='Connecting Your App', data-file='', data-highlight='')
+    :markdown
+      ## Final Redirect - Connecting your App
+
+      To reach this point in the code, your app must have:
+
+      1. Successfully validated an installation request from Weebly to your `manifest.json` *callback_url* property
+      2. Redirected back to Weebly with the expected request/payload
+      3. Successfully received an `authorization_code` from the **phase-two** portion of the OAuth2 Authorization Flow
+      4. Redirected back to Weebly to exchange your `authorization_code` for a valid API `access_token`
+      5. Executed any account/user setup or validations interally for your app or service
+
+      This final redirect indicates to Weebly that your app has completed all necessary setup and configuration operations, and the app should be considered "installed" and "connected".
+
+      If your app does not perform this final redirect, your app will be in a **disconnected** state.
+
+.chapter(data-title='Webhooks')
+  .step(data-title='Webhook Middleware', data-file='')
+    :markdown
+      ## Webhooks Middleware
+
+      Your app needs to handle all incoming HTTP POST requests beginning with `/webhooks`.
+
+      The URL where events will be sent is defined in `webhooks.callback_url` property of your `manifest.json`.
+
+      Please read the [Receiving Webhooks](https://dev.weebly.com/pf_wh_webhooks.html#receive-webhooks) to understand the data Weebly will POST to your app when events occur to which your app has subscribed.
+
+  .step(data-title='Subscribing to Events', data-file='manifest.json', data-highlight='9-11')
+    :markdown
+      ## Subscribing to Events
+
+      Weebly apps can [subscribe to events](https://dev.weebly.com/pf_wh_webhooks.html#subscribe-to-webhooks). There are several different types of events available for your app to be notified about when they occur upon a site where your app is installed:
+
+      * [User Events](https://dev.weebly.com/pf_wh_user.html)
+      * [Site Events](https://dev.weebly.com/pf_wh_site.html)
+      * [Store Events](https://dev.weebly.com/pf_wh_store.html)
+      * [Membership Events](https://dev.weebly.com/pf_wh_member.html)
+      * [App Events](https://dev.weebly.com/pf_wh_app.html)
+      * [Form Events](https://dev.weebly.com/pf_wh_form.html)
+      * [Blog Events](https://dev.weebly.com/pf_wh_blog.html)
+      * [Dashboard Card Events](https://dev.weebly.com/pf_wh_card.html)
+
+      You define the types of Weebly Events your app will receive in the **webhooks.events** property in your `manifest.json`.
+
+      The default `events` this app subscribes to are: `app.uninstall`, `user.update`, `site.publish`, `site.delete`. These are all crucial events for any Weebly App and are highly recommended for subscription.
+
+  .step(data-title='Receiving Events', data-file='', data-highlight='')
+    :markdown
+      ## Subscribing to Events
+        The code here indicates this app will only HTTP POST requests sent to:
+
+        `{{YOUR_APP_ROOT_URL}}/webhooks/callback` will be accepted, but you still need to peform request invalidation to be certain Weebly sent the request.
+
+  .step(data-title='Invalidating Webhook Event Requests', data-file='', data-highlight='')
+    :markdown
+      ## Invalidating Webhook Event Requests
+
+      To prevent malicious attackers from spoofing or forging requests to your `webhook.callback_url` you need to invalidate the request.
+
+      All Webhook Event POST Request Body will contain:
+
+      * `client_id`: Your app's Client ID from the Weebly Developer Admin Portal
+      * `client_version`:  The version of your app which generated the event (helpful in cases of managing multiple versions)
+      * `event`: The event name (according to the Weebly Webhook docs)
+      * `timestamp`: Unix epoch timestamp when the event occurred according to Weebly servers
+      * `data`: Event-specific data, see the respective Webhook Event Type docs
+      * `hmac`: `client_id, `client_version`, `event`, `timestamp`, and `data` sent in the request to be used to invalidate incoming event requests
+
+      Similar to verifying the HMAC hash received on app installation, here we prepare a comparison object/string and then re-generate the HMAC to be certain the request was actually created and sent by Weebly.
+
+  .step(data-title='Handling Events', data-file='', data-highlight='')
+    :markdown
+      ## Handling Events
+
+      Here, the code is merely logging the event headers and requests to console, but this is an opportunity for your app to become event-driven!
+
+      In production apps, this is the point-in-time to handle events allowing your app to behave proactively, addressing concerns such as:
+
+      * Saving events to persistent storage (logging)
+      * Making relevant Weebly API requests based on your app business logic
+      * Performing internal data update(s)for the respective customer/site
+      * Revoking access/permissions (in cases of `app.uninstall` or `site.delete` events)
+      * Alerting/Reporting to customer(s) of related changes within your app/service
+
+  .step(data-title='Webhook Event Responses', data-file='', data-highlight='')
+    :markdown
+      ## Webhook Event Responses
+
+      When your app has received a valid and verified Weebly Event Request, it is expected that your server will respond with an HTTP 200 Status Code before the request times out.
+
+      If you respond with anything other than an HTTP 200 to a valid Weebly Webhook Event Request, Weebly will continue to retry sending the Webhook event to your server up to 12 times over a 48 hour period.
+
+.chapter(data-title='Next Steps')
+  .step(data-title='Build Custom Event Handlers')
+    :markdown
+      ## Custom Event Handlers
+
+      A natural next step is for you to develop custom event handlers that interoperate with your business systems.
+
+      This app is already subscribed to: `app.uninstall`, `site.publish`, `site.delete`, and `user.update` events.
+
+      How would you implement custom handlers for each of these types of events?
+
+  .step(data-title='Persistent Data Storage')
+    :markdown
+      ## Persistent Data Storage
+
+      You'll want to have a persistent data store to handle:
+
+      * App Installation states (OAuth2 Authorization Flow)
+      * Site Publish Events (especially if you have developed a [Weebly Element App](https://dev.weebly.com/pf_apps_elements.html).
+      * Deactivate or delete App Installations when you receive new `app.uninstall` or `site.delete` events
+      * Prevent data loss when this app is unloaded from memory
+
+.chapter(data-title='Conclusion')
+  .step(data-title='Share Your Feedback!')
+    :markdown
+      ## Share Your Feedback
+
+      To help us improve this tutorial, and the code we open source, we need your feedback:
+
+      * Find an issue in this tutorial or the code? [Create an issue on Github Issue Tracker](https://github.com/Weebly/php-webhook-client/issues).
+      * Did this tutorial or code help you? [Share the love on Twitter](https://twitter.com/weebly_eng).
+      * Find a better way to do things? [Submit a Pull Request](https://github.com/Weebly/php-webhook-client/pulls)
+      * Have an idea or need some help? Create a developer support case at: dev-support@weebly.com
