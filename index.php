@@ -2,6 +2,12 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 
+// Only use the Dotenv lib on development environments
+if('production' !== getenv('NODE_ENV')) {
+	$dotenv = new Dotenv\Dotenv(__DIR__);
+	$dotenv->load();
+}
+
 /**
  * Client ID and Secret need to get set outside of the codebase, expecting environment var to store it
  */

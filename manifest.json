@@ -1,0 +1,21 @@
+{
+  "manifest": "1",
+  "client_id": "{{YOUR_CLIENT_ID}}",
+  "version": "1.0.0",
+  "callback_url": "{{YOUR_SECURE_APP_ROOT_URL}}/oauth/phase-one", 
+  "oauth_final_destination": "home",
+  "webhooks": {
+    "callback_url": "{{YOUR_SECURE_APP_ROOT_URL}}/webhooks/callback",
+    "events": [
+      "user.update","site.publish", "site.delete", "app.uninstall"
+    ]
+  },
+  "scopes": [
+    "read:user",
+    "read:site"
+  ],
+  "locale": {
+    "default": "en-us",
+    "supported": ["en-us"]
+  }
+}
