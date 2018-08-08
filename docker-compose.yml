@@ -1,0 +1,18 @@
+web:
+  build: .
+  command: 'bash -c ''vendor/bin/heroku-php-apache2'''
+  working_dir: /app/user
+  environment:
+    PORT: ${PORT}
+  ports:
+    - '${PORT}:${PORT}'
+shell:
+  build: .
+  command: bash
+  working_dir: /app/user
+  environment:
+    PORT: ${PORT}
+  ports:
+    - '${PORT}:${PORT}'
+  volumes:
+    - '.:/app/user'
