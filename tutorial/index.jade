@@ -33,7 +33,7 @@
       Please use the instructions in the [README](https://github.com/weebly/php-webhook-client#usage) file to setup this app for live operation and to see it in action.
 
 .chapter(data-title='Server Basics')
-  .step(data-title='Docker', data-file='server.js', data-highlight='3-5,16-20,56')
+  .step(data-title='Docker', data-file='docker-compose.yml')
     :markdown
       ## About the Web Server
 
@@ -43,8 +43,22 @@
 
       Instead, it is expected you will follow the directions in the README file to deploy this container to Heroku.
 
+  .step(data-title='Environment Vars', data-file='index.php', data-highlight='5-9')
+    :markdown
+      ## Environment Variables
+
+      Here, the code is checking if you are running locally or in production, and loads the environment variables appropriately.
+
+  .step(data-title='App Bootstrapping', data-file='index.php', data-highlight='11-29')
+    :markdown
+      ## App Bootstrapping
+
+      Once dependencies are loaded from Composer autoload, the app checks to make certain your Weebly API Keys are available as environment Variables, because they will be used in subsequent request handlers.
+
+      If these checks all return satisfactory results, the app is started.
+
 .chapter(data-title='Handling OAuth Requests')
-  .step(data-title='Handling OAuth Requests', data-file='')
+  .step(data-title='Handling OAuth Requests', data-file='app/Application.php', data-highlighting='69-80')
     :markdown
       ## OAuth Middleware 
 
@@ -52,13 +66,13 @@
 
       Please read the [App Authorization and Installation Flow](https://dev.weebly.com/pf_apps_authorize_and_install.html) to understand each phase of the OAuth2 Authorization Flow that Weebly apps encounter during installation.
 
-  .step(data-title='OAuth - Phase One', data-file='', data-highlight='')
+  .step(data-title='OAuth - Phase One', data-file='app/Application.php', data-highlight='162-190')
     :markdown
       ## Oauth - Phase One
 
       First, the code will accept HTTP **GET** requests going to `/oauth/phase-one`, and immediately defines the `clientId` and `secretKey` variables which were made available from the Weebly Middleware.
 
-  .step(data-title='Request Invalidation', data-file='', data-highlight='')
+  .step(data-title='Request Invalidation', data-file='app/Application.php', data-highlight='168-177')
     :markdown
       ## Request Validation
 
@@ -76,7 +90,7 @@
       4. Weebly creates an HMAC-SHA256 encoded hash of the request parameters using your Weebly App **SECRET**, which means **ONLY YOU** should be able to recreate that **EXACT** HMAC string using identical values
       5. If your **generated** HMAC string is IDENTICAL to the HMAC in the request query parameters, you can consider this a "verified request" (trusting that it came from Weebly) and proceed with code execution
 
-  .step(data-title='Request an Authorization Code', data-file='', data-highlight='')
+  .step(data-title='Request an Authorization Code', data-file='app/Application.php', data-highlight='179-189')
     :markdown
       ## Requesting an Authorization Code
 
@@ -86,13 +100,13 @@
 
       If the redirect is successfully formed/accepted, Weebly will respond to your redirect by sending a new HTTP request to containing an `authorization_code` correlating to the Weebly User and Site.
 
-  .step(data-title='OAuth - Phase Two', data-file='', data-highlight='')
+  .step(data-title='OAuth - Phase Two', data-file='app/Application.php', data-highlight='192-227')
     :markdown
       ## Oauth - Phase Two
 
       Here, the code designates it will accept HTTP **GET** requests going to `/oauth/phase-two`, and immediately defines the `clientId` and `secretKey` variables.
 
-  .step(data-title='Obtaining an Access Token', data-file='', data-highlight='')
+  .step(data-title='Obtaining an Access Token', data-file='app/Application.php', data-highlight='201-203')
     :markdown
       ## Exchanging Authorization Code for Access Token
 
@@ -105,7 +119,7 @@
       3. App initiates POST request to **redirect_url** (Weebly API endpoint `/app-center/oauth/access_token`
       4. An `access_token` will be received upon a successful request, and should be stored securely by your app for future [Weebly API](https://dev.weebly.com/pf_apis_about.html) requests
 
-  .step(data-title='New User/Account Setup', data-file='', data-highlight='')
+  .step(data-title='New User/Account Setup', data-file='app/Application.php', data-highlight='208-213')
     :markdown
       ## New User/Account Setup in Your App
 
@@ -121,7 +135,7 @@
 
       These types of service initializations should occur prior to your app [redirecting to the final destination](https://dev.weebly.com/pf_apps_authorize_and_install.html#redirect-to-final-destination), which you can see in the next step of the tutorial.
 
-  .step(data-title='Connecting Your App', data-file='', data-highlight='')
+  .step(data-title='Connecting Your App', data-file='app/Application.php', data-highlight='215-216')
     :markdown
       ## Final Redirect - Connecting your App
 
@@ -138,7 +152,7 @@
       If your app does not perform this final redirect, your app will be in a **disconnected** state.
 
 .chapter(data-title='Webhooks')
-  .step(data-title='Webhook Middleware', data-file='')
+  .step(data-title='Webhook Middleware', data-file='app/Application.php', data-highlight='82-89')
     :markdown
       ## Webhooks Middleware
 
@@ -167,14 +181,14 @@
 
       The default `events` this app subscribes to are: `app.uninstall`, `user.update`, `site.publish`, `site.delete`. These are all crucial events for any Weebly App and are highly recommended for subscription.
 
-  .step(data-title='Receiving Events', data-file='', data-highlight='')
+  .step(data-title='Receiving Events', data-file='app/Application.php', data-highlight='229-282')
     :markdown
       ## Subscribing to Events
         The code here indicates this app will only HTTP POST requests sent to:
 
         `{{YOUR_APP_ROOT_URL}}/webhooks/callback` will be accepted, but you still need to peform request invalidation to be certain Weebly sent the request.
 
-  .step(data-title='Invalidating Webhook Event Requests', data-file='', data-highlight='')
+  .step(data-title='Invalidating Webhook Event Requests', data-file='app/Application.php', data-highlight='233-259')
     :markdown
       ## Invalidating Webhook Event Requests
 
@@ -191,7 +205,7 @@
 
       Similar to verifying the HMAC hash received on app installation, here we prepare a comparison object/string and then re-generate the HMAC to be certain the request was actually created and sent by Weebly.
 
-  .step(data-title='Handling Events', data-file='', data-highlight='')
+  .step(data-title='Handling Events', data-file='app/Application.php', data-highlight='261-278')
     :markdown
       ## Handling Events
 
@@ -205,7 +219,7 @@
       * Revoking access/permissions (in cases of `app.uninstall` or `site.delete` events)
       * Alerting/Reporting to customer(s) of related changes within your app/service
 
-  .step(data-title='Webhook Event Responses', data-file='', data-highlight='')
+  .step(data-title='Webhook Event Responses', data-file='app/Application.php', data-highlight='280-281')
     :markdown
       ## Webhook Event Responses
 
